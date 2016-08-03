@@ -1,16 +1,25 @@
 const autoprefixer = require('autoprefixer');
 const path = require('path');
+var webpack = require("webpack");
+
 
 module.exports = {
-  // entry: ['./node_modules/zone.js/dist/zone.js', './src/app.ts'],
-  entry: ['./src/app.ts'],
+  entry: [
+    './node_modules/zone.js/dist/zone.js',
+    './node_modules/jquery/dist/jquery.min.js',
+    './node_modules/materialize-css/dist/js/materialize.min.js',
+    './src/polyfills.ts',
+    './src/app/main.ts'],
   output: {
     path: path.resolve('./dist'),
     filename: 'bundle.js'
   },
   resolve: {
     root: path.resolve('./src'),
-    extensions: ['', '.webpack.js', '.web.js', '.ts', '.tsx', '.js']
+    extensions: ['', '.webpack.js', '.web.js', '.ts', '.tsx', '.js'],
+    alias: {
+      materialize: 'materialize-css/dist/js/materialize.js'
+    }
   },
   module: {
     loaders: [
@@ -21,6 +30,10 @@ module.exports = {
       {
         test: /\.html$/,
         loader: 'html'
+      },
+      {
+        test: /\.css$/,
+        loaders: ['style', 'css']
       },
       {
         test: /\.scss$/,
@@ -39,6 +52,15 @@ module.exports = {
       }
     ]
   },
+  plugins: [
+    new webpack.ProvidePlugin({
+      $: "jquery",
+      jQuery: "jquery",
+      "window.jQuery": "jquery",
+      "root.jQuery": "jquery",
+      Hammer: "hammerjs/hammer"
+    })
+  ],
   postcss: function() {
     return [autoprefixer];
   }
